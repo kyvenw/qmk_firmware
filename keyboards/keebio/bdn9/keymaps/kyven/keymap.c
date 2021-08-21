@@ -22,7 +22,7 @@ enum encoder_names {
 };
 
 enum my_keycodes {
-  TOGGLE_BASE_LAYER = SAFE_RANGE
+  CYCLE_BASE_LAYER = SAFE_RANGE
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -50,14 +50,27 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [2] = LAYOUT(
         RESET  , BL_STEP, KC_STOP,
-        _______, KC_HOME, TOGGLE_BASE_LAYER,
+        _______, KC_HOME, CYCLE_BASE_LAYER,
         KC_MPRV, KC_END , KC_MNXT
     ),
 
     [3] = LAYOUT(
         RESET  , BL_STEP, KC_STOP,
-        _______, KC_HOME, TOGGLE_BASE_LAYER,
+        _______, KC_HOME, CYCLE_BASE_LAYER,
         KC_MPRV, KC_END , KC_MNXT
+    ),
+
+
+    [4] = LAYOUT(
+        KC_MUTE, KC_HOME, KC_MPLY,
+        MO(5)  , KC_UP  , RGB_MOD,
+        KC_LEFT, KC_Z, KC_X
+    ),
+
+    [5] = LAYOUT(
+        RESET  , BL_STEP, KC_STOP,
+        _______, _______, CYCLE_BASE_LAYER,
+        _______, _______ , _______
     )
 };
 
@@ -75,6 +88,10 @@ layer_state_t layer_state_set_kb(layer_state_t state) {
         case 3:
             rgblight_sethsv_red();
             break;
+        case 4:
+            rgblight_sethsv_pink();
+        case 5:
+            rgblight_sethsv_magenta();
         default:
             rgblight_sethsv_white();
             break;
@@ -118,14 +135,17 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-    case TOGGLE_BASE_LAYER:
+    case CYCLE_BASE_LAYER:
       if (record->event.pressed) {
-        layer_debug();
         // Toggle layers
         if (get_highest_layer(layer_state) == 2) {
             set_single_persistent_default_layer(1);
             layer_move(3);
             layer_on(1);
+        } else if (get_highest_layer(layer_state) == 3) {
+            set_single_persistent_default_layer(4);
+            layer_move(5);
+            layer_on(4);
         } else {
             set_single_persistent_default_layer(0);
             layer_move(2);
