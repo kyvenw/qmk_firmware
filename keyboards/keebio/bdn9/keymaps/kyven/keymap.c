@@ -34,7 +34,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      */
     [0] = LAYOUT(
         KC_MUTE, KC_HOME, KC_MPLY,
-        MO(2)  , KC_UP  , RGB_MOD,
+        MO(3)  , KC_UP  , RGB_MOD,
         KC_LEFT, KC_DOWN, KC_RGHT
     ),
     /*
@@ -44,14 +44,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      */
     [1] = LAYOUT(
         KC_MUTE, KC_HOME, KC_MPLY,
-        MO(3)  , KC_UP  , RGB_MOD,
+        MO(4)  , KC_UP  , RGB_MOD,
         KC_LEFT, KC_DOWN, KC_RGHT
     ),
 
     [2] = LAYOUT(
-        RESET  , BL_STEP, KC_STOP,
-        _______, KC_HOME, CYCLE_BASE_LAYER,
-        KC_MPRV, KC_END , KC_MNXT
+        KC_MUTE, KC_HOME, KC_MPLY,
+        MO(5)  , KC_ESC  , RGB_MOD,
+        KC_Z, KC_X, KC_TILD
     ),
 
     [3] = LAYOUT(
@@ -62,9 +62,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
     [4] = LAYOUT(
-        KC_MUTE, KC_HOME, KC_MPLY,
-        MO(5)  , KC_UP  , RGB_MOD,
-        KC_LEFT, KC_Z, KC_X
+        RESET  , BL_STEP, KC_STOP,
+        _______, KC_HOME, CYCLE_BASE_LAYER,
+        KC_MPRV, KC_END , KC_MNXT
     ),
 
     [5] = LAYOUT(
@@ -83,15 +83,17 @@ layer_state_t layer_state_set_kb(layer_state_t state) {
             rgblight_sethsv_orange();
             break;
         case 2:
-            rgblight_sethsv_blue();
+            rgblight_sethsv_pink();
             break;
         case 3:
-            rgblight_sethsv_red();
+            rgblight_sethsv_blue();
             break;
         case 4:
-            rgblight_sethsv_pink();
+            rgblight_sethsv_red();
+            break;
         case 5:
             rgblight_sethsv_magenta();
+            break;
         default:
             rgblight_sethsv_white();
             break;
@@ -138,17 +140,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case CYCLE_BASE_LAYER:
       if (record->event.pressed) {
         // Toggle layers
-        if (get_highest_layer(layer_state) == 2) {
+        if (get_highest_layer(layer_state) == 3) {
             set_single_persistent_default_layer(1);
-            layer_move(3);
+            layer_move(4);
             layer_on(1);
-        } else if (get_highest_layer(layer_state) == 3) {
-            set_single_persistent_default_layer(4);
+        } else if (get_highest_layer(layer_state) == 4) {
+            set_single_persistent_default_layer(2);
             layer_move(5);
-            layer_on(4);
+            layer_on(2);
         } else {
             set_single_persistent_default_layer(0);
-            layer_move(2);
+            layer_move(3);
             layer_on(0);
         }
       }
